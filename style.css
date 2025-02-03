@@ -431,5 +431,5 @@ button:hover { background: #333; }
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: ;
+    object-fit: cover;
 }
