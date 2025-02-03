@@ -20,26 +20,15 @@
             <h2>Scan a Product</h2>
             <button class="square-button" onclick="navigateTo('scan')">Scan</button>
         </div>
-        <div class="tab-content" id="scan" style="z-index: 1000;">
-            <div id="barcode-scanner" style="width: 100%; height: 100vh; position: relative;">
-                <video id="video" style="width: 100%; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0;"></video>
-                <div id="camera-settings" style="position: absolute; top: 10px; left: 10px; z-index: 1;">
-                    <div>
-                        <input type="radio" id="use-back-camera" name="camera" value="back" checked>
-                        <label for="use-back-camera">Use Back Camera</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="use-front-camera" name="camera" value="front">
-                        <label for="use-front-camera">Use Front Camera</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="use-wide-screen" name="camera" value="wide">
-                        <label for="use-wide-screen">Use Wide Screen</label>
-                    </div>
-                </div>
-                <div class="bottom-button" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">
-                    <button id="proceed-button" style="display: none;" onclick="proceedToCart()">Proceed to Cart</button>
-                </div>
+        <div class="tab-content" id="scan">
+            <h2>Scan a Barcode</h2>
+            
+            <p id="barcode-result">Scanned Barcode Data will appear here.</p>
+            <button id="save-btn" style="display:none;">Save Barcode</button>
+            <div class="bottom-button">
+                <button id="proceed-button" style="display: none;" onclick="proceedToCart()">Proceed to Cart</button>
+            </div><div id="barcode-scanner-container">
+                <div id="barcode-scanner"></div>
             </div>
         </div>
         <div class="tab-content" id="cart">

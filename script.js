@@ -5,7 +5,6 @@ let currentBarcode = '';
 const productMap = {
     '4806518335346': { name: 'Belo', price: 600 },
     '4800010075069': { name: 'Cream O', price: 10 },
-    
     // add more mappings here
 };
 
@@ -38,68 +37,81 @@ function hideLogo() {
 
 // Function to start barcode scanner
 function startBarcodeScanner() {
-    const constraints = {
-        video: {
-            facingMode: { exact: "environment" }, // Default to back camera
-            width: { ideal: 1920 }, // Ideal width
-            height: { ideal: 1080 } // Ideal height
-        }
-    };
-
-    // Update camera settings based on radio button selection
-    const cameraType = document.querySelector('input[name="camera"]:checked').value;
-    if (cameraType === 'front') {
-        constraints.video.facingMode = { exact: "user" }; // Use front camera
-    } else if (cameraType === 'wide') {
-        constraints.video.width = { ideal: 1920 }; // Use wide screen width
-        constraints.video.height = { ideal: 1080 }; // Use wide screen height
-    }
-
     Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: document.getElementById('video'),
-            constraints: constraints
+        inputStream: { 
+            name: "Live", 
+            type: "LiveStream", 
+            target: "#barcode-scanner", 
+            constraints: { facingMode: "environment" } 
         },
-        decoder: {
+        decoder: { 
             readers: ["ean_reader", "upc_reader", "code_128_reader", "ean_8_reader"]
         },
-        frequency: 10,
-        locator: { patchSize: "large", halfSample: true },
-        numOfWorkers: 4
+        frequency: 10,  
+        locator: { patchSize: "large", halfSample: true }, 
+        numOfWorkers: 4 
     }, function(err) {
-        if (err) {
-            console.error(err);
-            return;
+        if (err) { 
+            console.error(err); 
+            return; 
         }
         Quagga.start();
     });
-}
 
-// Add event listener to radio buttons
-document.querySelectorAll('input[name="camera"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        Quagga.stop();
-        startBarcodeScanner();
+    // On barcode detected
+    Quagga.onDetected(function(result) {
+        const barcode = result.codeResult.code;
+        const currentTime = new Date().getTime();
+
+        // Prevent spamming scans (2-second interval)
+        if (currentTime - lastScannedTime < 2000) return;
+        lastScannedTime = currentTime;
+
+        const existingItem = scannedItems.find(item => item.barcode === barcode);
+
+        if (existingItem) {
+            // Show notification for existing item
+            const notification = document.createElement('div');
+            notification.textContent = `You already have ${existingItem.quantity} ${productMap[barcode] ? productMap[barcode].name : 'Unknown Product'} in your cart.`;
+            notification.style.position = 'fixed';
+            notification.style.top = '50%';
+            notification.style.left = '50%';
+            notification.style.transform = 'translate(-50%, -50%)';
+            notification.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            notification.style.color = 'white';
+            notification.style.padding = '10px';
+            notification.style.borderRadius = '10px';
+            notification.style.zIndex = '1000';
+
+            document.body.appendChild(notification);
+
+            // Remove notification after 2 seconds
+            setTimeout(function() {
+                document.body.removeChild(notification);
+            }, 2000);
+
+            document.getElementById('popup').style.display = 'flex';
+            document.getElementById('quantity').value = 1;
+        } else {
+            if (productMap[barcode]) {
+                currentBarcode = barcode;
+                document.getElementById('popup').style.display = 'flex';
+                document.getElementById('quantity').value = 1;
+            } else {
+                // Removed alert notification
+            }
+        }
     });
-});
 
-// On barcode detected
-Quagga.onDetected(function(result) {
-    const barcode = result.codeResult.code;
-    const currentTime = new Date().getTime();
+    // On barcode processed
+    Quagga.onProcessed(function(result) {
+        if (result.codeResult) {
+            return;
+        }
 
-    // Prevent spamming scans (2-second interval)
-    if (currentTime - lastScannedTime < 2000) return;
-    lastScannedTime = currentTime;
-
-    const existingItem = scannedItems.find(item => item.barcode === barcode);
-
-    if (existingItem) {
-        // Show notification for existing item
+        // Show notification for invalid barcode scan
         const notification = document.createElement('div');
-        notification.textContent = `You already have ${existingItem.quantity} ${productMap[barcode] ? productMap[barcode].name : 'Unknown Product'} in your cart.`;
+        notification.textContent = 'I cant read it properly, please scan again';
         notification.style.position = 'fixed';
         notification.style.top = '50%';
         notification.style.left = '50%';
@@ -116,46 +128,8 @@ Quagga.onDetected(function(result) {
         setTimeout(function() {
             document.body.removeChild(notification);
         }, 2000);
-
-        document.getElementById('popup').style.display = 'flex';
-        document.getElementById('quantity').value = 1;
-    } else {
-        if (productMap[barcode]) {
-            currentBarcode = barcode;
-            document.getElementById('popup').style.display = 'flex';
-            document.getElementById('quantity').value = 1;
-        } else {
-            // Removed alert notification
-        }
-    }
-});
-
-// On barcode processed
-Quagga.onProcessed(function(result) {
-    if (result.codeResult) {
-        return;
-    }
-
-    // Show notification for invalid barcode scan
-    const notification = document.createElement('div');
-    notification.textContent = 'I cant read it properly, please scan again';
-    notification.style.position = 'fixed';
-    notification.style.top = '50%';
-    notification.style.left = '50%';
-    notification.style.transform = 'translate(-50%, -50%)';
-    notification.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    notification.style.color = 'white';
-    notification.style.padding = '10px';
-    notification.style.borderRadius = '10px';
-    notification.style.zIndex = '1000';
-
-    document.body.appendChild(notification);
-
-    // Remove notification after 2 seconds
-    setTimeout(function() {
-        document.body.removeChild(notification);
-    }, 2000);
-});
+    });
+}
 
 // Function to add quantity
 function addQuantity() {
@@ -352,7 +326,4 @@ function proceedToCart() {
 }
 
 // Initialize scanner when page loads
-window.onload = () => {
-    navigateTo('start');
-    startBarcodeScanner();
-};
+window.onload = () => navigateTo('start');
