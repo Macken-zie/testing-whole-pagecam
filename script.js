@@ -5,6 +5,7 @@ let currentBarcode = '';
 const productMap = {
     '4806518335346': { name: 'Belo', price: 600 },
     '4800010075069': { name: 'Cream O', price: 10 },
+    '4005900437907': { name: 'Nivea Pearl Radiant', price: 600 },
     // add more mappings here
 };
 
