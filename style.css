@@ -417,11 +417,11 @@ button:hover { background: #333; }
 }
 #barcode-scanner-container {
     position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 80vh;
+    
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
     background-color: #fff;
     z-index: 1000;
 }
@@ -431,5 +431,5 @@ button:hover { background: #333; }
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: ;
 }
