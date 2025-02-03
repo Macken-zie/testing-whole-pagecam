@@ -21,15 +21,13 @@
             <button class="square-button" onclick="navigateTo('scan')">Scan</button>
         </div>
         <div class="tab-content" id="scan">
-            <h2>Scan a Barcode</h2>
-            
-            <p id="barcode-result">Scanned Barcode Data will appear here.</p>
-            <button id="save-btn" style="display:none;">Save Barcode</button>
-           <div id="barcode-scanner-container">
+            <div id="barcode-scanner-container">
                 <div id="barcode-scanner"></div>
             </div>
+            <p id="barcode-result">Scanned Barcode Data will appear here.</p>
+            <button id="save-btn" style="display:none;">Save Barcode</button>
             <div class="bottom-button">
-                <button id="proceed-button" style="display: none;" onclick="proceedToCart()">Proceed to Cart</button>
+                <button id="proceed-button" style="display: block;" onclick="proceedToCart()">Proceed to Cart</button>
             </div>
         </div>
         <div class="tab-content" id="cart">
