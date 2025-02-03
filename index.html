@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lemon+Milk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo" id="welcome">Welcome!</div>
+        <img src="./assets/SwiftLogo.png" alt="Logo" class="logo start-logo" id="logo">
+        <img src="./assets/Logo-name.png" alt="Logo-name" class="swift-logo" style="display: none;" id="logo-name">
+        <div class="tab-content active" id="start"><button onclick="hideWelcome(); hideLogo(); navigateTo('intermediate')">Start Shopping</button></div>
+        <div class="tab-content" id="intermediate">
+            <h2>Scan a Product</h2>
+            <button class="square-button" onclick="navigateTo('scan')">Scan</button>
+        </div>
+        <div class="tab-content" id="scan" style="z-index: 1000;">
+            <div id="barcode-scanner" style="width: 100%; height: 100vh; position: relative;">
+                <video id="video" style="width: 100%; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0;"></video>
+                <div id="camera-settings" style="position: absolute; top: 10px; left: 10px; z-index: 1;">
+                    <div>
+                        <input type="radio" id="use-back-camera" name="camera" value="back" checked>
+                        <label for="use-back-camera">Use Back Camera</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="use-front-camera" name="camera" value="front">
+                        <label for="use-front-camera">Use Front Camera</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="use-wide-screen" name="camera" value="wide">
+                        <label for="use-wide-screen">Use Wide Screen</label>
+                    </div>
+                </div>
+                <div class="bottom-button" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">
+                    <button id="proceed-button" style="display: none;" onclick="proceedToCart()">Proceed to Cart</button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content" id="cart">
+            <h2>Your Cart</h2>
+            <div class="cart-bubble">
+                <table border="1" width="100%" style="border-collapse: collapse; border-radius: 12px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: #f1f1f1; border-radius: 12px;">
+                            <th style="padding: 12px; text-align: center; font-weight: bold;">Product</th>
+                            <th style="padding: 12px; text-align: center; font-weight: bold;">Quantity</th>
+                            <th style="padding: 12px; text-align: center; font-weight: bold;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTable" style="border-radius: 12px;">
+                    </tbody>
+                </table>
+            </div>
+            <p id="totalPrice" style="margin-top: 20px; font-size: 20px; font-weight: bold; text-align: center;">Total: ₱0.00</p>
+            <button id="scan-again-button" onclick="navigateTo('scan')">Scan Again</button>
+            <div class="bottom-button">
+                <button id="checkout-button" onclick="checkout()">Proceed to Checkout</button>
+            </div>
+        </div>
+        <div class="tab-content" id="checkout">
+            <h2>Checkout QR Code</h2>
+            <div id="qrCodeContainer"></div>
+            <p style="margin-top: 10px; font-size: 16px; color: #333;">Ready to be scanned at the cashier. Please proceed.</p>
+            <div class="bottom-button">
+                <button onclick="navigateTo('scan')">Scan Again</button>
+                <button onclick="closeQRPopup()">Close</button>
+            </div>
+        </div>
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <h2>Quantity</h2>
+                <input type="number" id="quantity" value="1">
+                <button onclick="addQuantity()">Add</button>
+                <button onclick="cancelQuantity()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
